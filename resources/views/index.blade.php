@@ -17,7 +17,7 @@
     </head>
     <body>
 
-        <div id="main"></div>
+        <div id="main">Загрузка...</div>
 
         {{--<!-- JavaScripts -->--}}
         <script src="{{ elixir('js/app.js') }}"></script>

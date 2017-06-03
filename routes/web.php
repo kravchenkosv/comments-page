@@ -14,3 +14,8 @@
 Route::get('/', function () {
     return view('index');
 });
+
+Route::get('/show', 'CommentController@show');
+Route::post('/store', 'CommentController@store');
+Route::delete('/delete', 'CommentController@delete');
+Route::patch('/edit', 'CommentController@edit');

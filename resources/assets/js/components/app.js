@@ -1,10 +1,11 @@
 import React from 'react';
-import Form from './form';
 import axios from 'axios';
+import Form from './form';
 import Comments from './commnets';
 import SomePost from './some-post';
 
-class App extends React.Component {
+export default class App extends React.Component
+{
     constructor() {
         super();
         this.state = {
@@ -16,28 +17,43 @@ class App extends React.Component {
             editComment: []
         };
     }
-    getDataComments(){
+
+    getDataComments() {
         let self = this;
 
         axios.get('/show')
             .then(function (response) {
+
                 if(response.data.length > 0){
                     self.setState({ data: response.data });
                     let bool_id = false;
+
                     self.state.data.forEach(function(item){
-                        if(item.id == self.state.idForComment) {
+
+                        if(item.id == self.state.idForComment || item.id == self.state.idForEdit) {
                             bool_id = true;
                             return false;
                         }
                     });
+
                     if(!bool_id) {
                         self.setState({
+                            idForEdit: 0,
+                            clickForEdit: false,
                             idForComment: 0,
-                            clickForComment:false
+                            clickForComment:false,
+                            editComment: []
                         });
                     }
                 } else {
-                    self.setState({ data: [] });
+                    self.setState({
+                        idForEdit: 0,
+                        clickForEdit: false,
+                        idForComment: 0,
+                        clickForComment:false,
+                        editComment: [],
+                        data: []
+                    });
                     console.log('пусто')
                 };
             })
@@ -45,13 +61,15 @@ class App extends React.Component {
                 console.log(error);
             });
     }
-    componentDidMount(){
-        this.getDataComments()
-    }
+
     listenIdForComment(e){
         let self = this,
             id = e.target.getAttribute('data-id');
+
         if(self.state.clickForEdit) {
+            if(this.state.idForEdit == id) {
+                return false;
+            }
             self.setState({
                 idForComment: id,
                 clickForComment: true
@@ -65,6 +83,7 @@ class App extends React.Component {
         }
 
     }
+
     listenIdForEdit(e){
         let self = this,
             id = e.target.getAttribute('data-id');
@@ -74,21 +93,26 @@ class App extends React.Component {
             idForComment: 0,
             clickForComment: false
         });
-        if(id){
-            self.state.data.forEach(function(item){
-                if(id == item.id){
+
+        if(id) {
+
+            self.state.data.forEach(function(item) {
+
+                if(id == item.id) {
                     self.setState({editComment: item});
                     return false;
                 }
             });
         }
     }
+
     deleteSubForComment () {
         this.setState({
             idForComment: 0,
             clickForComment: false
         })
     }
+
     deleteSubForEdite () {
         this.setState({
             idForComment: 0,
@@ -98,14 +122,35 @@ class App extends React.Component {
             editComment: []
         })
     }
+
+    componentDidMount(){
+        this.getDataComments()
+    }
+
     render() {
         return (
             <div className="container">
+
                 <SomePost />
-                <Comments data={this.state.data} listenIdForComment={this.listenIdForComment.bind(this)} listenIdForEdit={this.listenIdForEdit.bind(this)} send={this.getDataComments.bind(this)} />
-                <Form editComment={this.state.editComment} send={this.getDataComments.bind(this)} clickForComment={this.state.clickForComment} clickForEdit={this.state.clickForEdit} idForComment={this.state.idForComment} idForEdit={this.state.idForEdit} deleteSubForComment={this.deleteSubForComment.bind(this)} deleteSubForEdite={this.deleteSubForEdite.bind(this)} />
+
+                <Comments
+                    data={this.state.data}
+                    listenIdForComment={this.listenIdForComment.bind(this)}
+                    listenIdForEdit={this.listenIdForEdit.bind(this)}
+                    send={this.getDataComments.bind(this)}
+                />
+
+                <Form
+                    editComment={this.state.editComment}
+                    send={this.getDataComments.bind(this)}
+                    clickForComment={this.state.clickForComment}
+                    clickForEdit={this.state.clickForEdit}
+                    idForComment={this.state.idForComment}
+                    idForEdit={this.state.idForEdit}
+                    deleteSubForComment={this.deleteSubForComment.bind(this)}
+                    deleteSubForEdite={this.deleteSubForEdite.bind(this)}
+                />
             </div>
         );
     }
 }
-export default App;

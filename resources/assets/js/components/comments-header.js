@@ -1,5 +1,5 @@
 import React from 'react';
-class CommentsHeader extends React.Component{
+export default class CommentsHeader extends React.Component{
     render() {
         return (
             <div className='page-header'>
@@ -8,4 +8,3 @@ class CommentsHeader extends React.Component{
         );
     }
 }
-export default CommentsHeader;
